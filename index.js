@@ -12,21 +12,16 @@ async function fetchWeatherAlerts(state) {
     const response = await fetch(`https://api.weather.gov/alerts/active?area=${state}`);
 
     if (!response.ok) {
-      throw new Error('Failed to fetch weather alerts');
+      throw new Error('Unable to fetch weather alerts');
     }
 
     const data = await response.json();
 
     displayAlerts(data);
-
-    if (errorDiv) {
-      errorDiv.textContent = '';
-    }
+    clearError();
 
   } catch (error) {
-    if (errorDiv) {
-      errorDiv.textContent = error.message;
-    }
+    displayError(error.message);
   }
 }
 
@@ -35,8 +30,10 @@ function displayAlerts(data) {
 
   alertsContainer.innerHTML = '';
 
+  const count = data.features.length;
+
   const summary = document.createElement('h2');
-  summary.textContent = `Current watches, warnings, and advisories: ${data.features.length}`;
+  summary.textContent = `Current watches, warnings, and advisories: ${count}`;
   alertsContainer.appendChild(summary);
 
   const ul = document.createElement('ul');
@@ -50,14 +47,24 @@ function displayAlerts(data) {
   alertsContainer.appendChild(ul);
 }
 
-if (button) {
+function displayError(message) {
+  if (!errorDiv) return;
+
+  errorDiv.textContent = message;
+}
+
+function clearError() {
+  if (!errorDiv) return;
+
+  errorDiv.textContent = '';
+}
+
+if (button && input) {
   button.addEventListener('click', () => {
     const state = input.value.trim().toUpperCase();
 
     if (!state) {
-      if (errorDiv) {
-        errorDiv.textContent = 'Please enter a state.';
-      }
+      displayError('Please enter a state abbreviation');
       return;
     }
 
