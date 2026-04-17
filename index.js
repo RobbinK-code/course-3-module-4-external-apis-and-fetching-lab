@@ -19,21 +19,24 @@ async function fetchWeatherAlerts(state) {
 
     displayAlerts(data);
 
-    errorDiv.textContent = '';
-    errorDiv.style.display = 'none';
+    if (errorDiv) {
+      errorDiv.textContent = '';
+    }
 
   } catch (error) {
-    errorDiv.textContent = error.message;
-    errorDiv.style.display = 'block';
+    if (errorDiv) {
+      errorDiv.textContent = error.message;
+    }
   }
 }
 
 function displayAlerts(data) {
+  if (!alertsContainer) return;
+
   alertsContainer.innerHTML = '';
 
-  const state = input.value.toUpperCase();
   const summary = document.createElement('h2');
-  summary.textContent = `Current watches, warnings, and advisories for ${state}: ${data.features.length}`;
+  summary.textContent = `Current watches, warnings, and advisories: ${data.features.length}`;
   alertsContainer.appendChild(summary);
 
   const ul = document.createElement('ul');
@@ -47,16 +50,19 @@ function displayAlerts(data) {
   alertsContainer.appendChild(ul);
 }
 
-button.addEventListener('click', () => {
-  const state = input.value.trim().toUpperCase();
+if (button) {
+  button.addEventListener('click', () => {
+    const state = input.value.trim().toUpperCase();
 
-  if (!state) {
-    errorDiv.textContent = 'Please enter a state abbreviation.';
-    errorDiv.style.display = 'block';
-    return;
-  }
+    if (!state) {
+      if (errorDiv) {
+        errorDiv.textContent = 'Please enter a state.';
+      }
+      return;
+    }
 
-  fetchWeatherAlerts(state);
+    fetchWeatherAlerts(state);
 
-  input.value = '';
-});
+    input.value = '';
+  });
+}
