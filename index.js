@@ -2,14 +2,14 @@
 const weatherApi = "https://api.weather.gov/alerts/active?area="
 
 // Your code here!
-const input = document.getElementById('state-input');
-const button = document.getElementById('get-alerts');
-const alertsContainer = document.getElementById('alerts');
+const input = document.getElementById('state');
+const button = document.getElementById('fetch-button');
+const alertsContainer = document.getElementById('alerts-display');
 const errorDiv = document.getElementById('error-message');
 
 async function fetchWeatherAlerts(state) {
   try {
-    const response = await fetch(`https://api.weather.gov/alerts/active?area=${state}`);
+    const response = await fetch(`${weatherApi}${state}`);
 
     if (!response.ok) {
       throw new Error('Unable to fetch weather alerts');
@@ -33,7 +33,7 @@ function displayAlerts(data) {
   const count = data.features.length;
 
   const summary = document.createElement('h2');
-  summary.textContent = `Current watches, warnings, and advisories: ${count}`;
+  summary.textContent = `Weather Alerts: ${count}`;
   alertsContainer.appendChild(summary);
 
   const ul = document.createElement('ul');
@@ -51,12 +51,14 @@ function displayError(message) {
   if (!errorDiv) return;
 
   errorDiv.textContent = message;
+  errorDiv.classList.remove('hidden');
 }
 
 function clearError() {
   if (!errorDiv) return;
 
   errorDiv.textContent = '';
+  errorDiv.classList.add('hidden');
 }
 
 if (button && input) {
