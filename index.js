@@ -1,9 +1,7 @@
-// index.js
-const weatherApi = "https://api.weather.gov/alerts/active?area="
+const weatherApi = "https://api.weather.gov/alerts/active?area=";
 
-// Your code here!
 const input = document.getElementById('state');
-const button = document.getElementById('fetch-button');
+const button = document.getElementById('get-weather');
 const alertsContainer = document.getElementById('alerts-display');
 const errorDiv = document.getElementById('error-message');
 
@@ -12,7 +10,7 @@ async function fetchWeatherAlerts(state) {
     const response = await fetch(`${weatherApi}${state}`);
 
     if (!response.ok) {
-      throw new Error('Unable to fetch weather alerts');
+      throw new Error('Network response was not ok');
     }
 
     const data = await response.json();
@@ -26,8 +24,6 @@ async function fetchWeatherAlerts(state) {
 }
 
 function displayAlerts(data) {
-  if (!alertsContainer) return;
-
   alertsContainer.innerHTML = '';
 
   const count = data.features.length;
@@ -37,36 +33,33 @@ function displayAlerts(data) {
   alertsContainer.appendChild(summary);
 
   data.features.forEach(alert => {
-  const p = document.createElement('p');
-  p.textContent = alert.properties.headline;
-  alertsContainer.appendChild(p);
-});
+    const p = document.createElement('p');
+    p.textContent = alert.properties.headline;
+    alertsContainer.appendChild(p);
+  });
+}
 
 function displayError(message) {
-  if (!errorDiv) return;
-
   errorDiv.textContent = message;
+
   errorDiv.classList.remove('hidden');
 }
 
 function clearError() {
-  if (!errorDiv) return;
-
   errorDiv.textContent = '';
+
   errorDiv.classList.add('hidden');
 }
 
-if (button && input) {
-  button.addEventListener('click', () => {
-    const state = input.value.trim().toUpperCase();
+button.addEventListener('click', () => {
+  const state = input.value.trim().toUpperCase();
 
-    if (!state) {
-      displayError('Please enter a state abbreviation');
-      return;
-    }
+  if (!state) {
+    displayError('Please enter a state abbreviation');
+    return;
+  }
 
-    fetchWeatherAlerts(state);
+  fetchWeatherAlerts(state);
 
-    input.value = '';
-  });
-}
+  input.value = '';
+});
