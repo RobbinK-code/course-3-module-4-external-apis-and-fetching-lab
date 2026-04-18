@@ -36,16 +36,11 @@ function displayAlerts(data) {
   summary.textContent = `Weather Alerts: ${count}`;
   alertsContainer.appendChild(summary);
 
-  const ul = document.createElement('ul');
-
   data.features.forEach(alert => {
-    const li = document.createElement('li');
-    li.textContent = alert.properties.headline;
-    ul.appendChild(li);
-  });
-
-  alertsContainer.appendChild(ul);
-}
+  const p = document.createElement('p');
+  p.textContent = alert.properties.headline;
+  alertsContainer.appendChild(p);
+});
 
 function displayError(message) {
   if (!errorDiv) return;
